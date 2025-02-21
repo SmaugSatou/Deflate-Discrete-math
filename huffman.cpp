@@ -3,6 +3,8 @@
 #include <queue>
 #include <functional>
 #include <string>
+#include <fstream>
+#include <iostream>
 
 class Huffman {
 private:
@@ -76,6 +78,49 @@ private:
         delete node;
     }
 
+    void saveHuffmanTree(Node* root, std::ofstream& outFile) {
+        if (root == nullptr) {
+            return;
+        }
+
+        if (root->left == nullptr && root->right == nullptr) {
+            outFile << "1" << root->character << root->rate << "\n";
+        }
+        else {
+            outFile << "0" << root->rate << "\n";
+        }
+
+        saveHuffmanTree(root->left, outFile);
+        saveHuffmanTree(root->right, outFile);
+    }
+
+    Node* loadHuffmanTree(std::ifstream& inFile) {
+        char flag;
+        inFile >> flag;
+
+        if (flag == '1') {
+            char symbol;
+            int frequency;
+            inFile >> symbol >> frequency;
+
+            return new Node(symbol, frequency);
+        }
+        else if (flag == '0') {
+            int frequency;
+            inFile >> frequency;
+
+            Node* left = loadHuffmanTree(inFile);
+            Node* right = loadHuffmanTree(inFile);
+
+            Node* internalNode = new Node(0, frequency);
+            internalNode->left = left;
+            internalNode->right = right;
+            return internalNode;
+        }
+
+        return nullptr;
+    }
+
 public:
     Huffman() : root(nullptr) {}
 
@@ -117,5 +162,17 @@ public:
         }
 
         return decodedData;
+    }
+
+    void saveHuffmanTreeToFile(const std::string filename) {
+        std::ofstream outFile(filename, std::ios::binary);
+        saveHuffmanTree(this->root, outFile);
+        outFile.close();
+    }
+
+    void loadHuffmanTreeFromFile(const std::string& filename) {
+        std::ifstream inFile(filename, std::ios::binary);
+        this->root = loadHuffmanTree(inFile);
+        inFile.close();
     }
 };
