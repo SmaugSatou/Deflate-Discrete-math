@@ -3,4 +3,4 @@ project(Deflate)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(huffman main.cpp huffman.cpp lz77.cpp filemanager.cpp)
+add_executable(deflate main.cpp huffman.cpp lz77.cpp filemanager.cpp)

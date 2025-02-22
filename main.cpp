@@ -4,6 +4,13 @@
 #include "lz77.cpp"
 #include "filemanager.cpp"
 
+/**
+ * @brief Compresses a file using LZ77 followed by Huffman coding and writes the output to a compressed file.
+ * @param inputFilePath The path to the input file to be compressed.
+ * @param outputFilePath The path where the compressed file will be saved.
+ * @param huffman A reference to a Huffman object used for encoding.
+ * @return The compressed Huffman-encoded bitstring.
+ */
 static std::string deflateCompress(const std::string inputFilePath, const std::string outputFilePath, Huffman& huffman) {
     std::ifstream inputFile(inputFilePath);
 
@@ -32,6 +39,13 @@ static std::string deflateCompress(const std::string inputFilePath, const std::s
     return huffmanCompressedData;
 }
 
+/**
+ * @brief Decompresses a file using Huffman decoding followed by LZ77 decompression.
+ * @param inputFilePath The path to the compressed file.
+ * @param outputFilePath The path where the decompressed file will be saved.
+ * @param huffman A reference to a Huffman object used for decoding.
+ * @return The decompressed string.
+ */
 static std::string deflateDecompress(const std::string inputFilePath, const std::string outputFilePath, Huffman& huffman) {
     std::string huffmanCompressedData = readCompressedData(inputFilePath);
     
@@ -46,6 +60,12 @@ static std::string deflateDecompress(const std::string inputFilePath, const std:
     return decompressedData;
 }
 
+/**
+ * @brief Main function that serves as the entry point for the compression and decompression program.
+ * @param argc Number of command-line arguments.
+ * @param argv Array of command-line argument strings.
+ * @return int Returns 0 on successful execution, 1 on errors.
+ */
 int main(int argc, char* argv[]) {
     if (argc < 4) {
         std::cerr << "Usage: " << argv[0] << " <action> <inputFilePath> <compressedFilePath> <decompressedFilePath>\n";

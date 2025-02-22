@@ -8,18 +8,29 @@
 
 class Huffman {
 private:
+
     struct Node {
         char character;
         int rate;
         Node* left;
         Node* right;
 
+        /**
+         * @brief Constructs a Node with a given character and frequency.
+         * @param character The character stored in this node.
+         * @param rate The frequency of the character.
+         */
         Node(char character, int rate) : character(character), rate(rate), left(nullptr), right(nullptr) {}
     };
 
     Node* root;
     std::unordered_map<char, std::string> codeDict;
 
+    /**
+     * @brief Builds the Huffman tree based on character frequencies.
+     * @param data The input string for which the tree is built.
+     * @return A pointer to the root of the constructed Huffman tree.
+     */
     Node* buildTree(const std::string& data) {
         std::unordered_map<char, int> rateCount;
 
@@ -54,6 +65,11 @@ private:
         return minRate.top();
     }
 
+    /**
+     * @brief Recursively fills the Huffman code dictionary.
+     * @param node The current node being processed.
+     * @param code The Huffman code generated so far.
+     */
     void fillCodeDict(Node* node, const std::string& code = "") {
         if (!node) {
             return;
@@ -67,6 +83,10 @@ private:
         fillCodeDict(node->right, code + '1');
     }
 
+    /**
+     * @brief Recursively deletes the Huffman tree to free memory.
+     * @param node The current node to be deleted.
+     */
     void destroyTree(Node* node) {
         if (!node) {
             return;
@@ -78,6 +98,11 @@ private:
         delete node;
     }
 
+    /**
+    * @brief Saves the Huffman tree structure to a file.
+    * @param root The root of the Huffman tree.
+    * @param outFile The output file stream.
+    */
     void saveHuffmanTree(Node* root, std::ofstream& outFile) {
         if (root == nullptr) {
             return;
@@ -94,6 +119,11 @@ private:
         saveHuffmanTree(root->right, outFile);
     }
 
+    /**
+     * @brief Loads a Huffman tree from a file.
+     * @param inFile The input file stream.
+     * @return A pointer to the root of the reconstructed Huffman tree.
+     */
     Node* loadHuffmanTree(std::ifstream& inFile) {
         char flag;
         inFile >> flag;  
@@ -123,17 +153,32 @@ private:
     }
 
 public:
+    /**
+     * @brief Constructor initializes the root to nullptr.
+     */
     Huffman() : root(nullptr) {}
 
+    /**
+     * @brief Destructor frees memory occupied by the Huffman tree.
+     */
     ~Huffman() {
         this->destroyTree(root);
     }
 
+    /**
+     * @brief Builds the Huffman tree and generates codes for encoding.
+     * @param data The input string to be processed.
+     */
     void build(const std::string& data) {
         this->root = buildTree(data);
         fillCodeDict(root);
     }
 
+    /**
+     * @brief Encodes a given string using Huffman encoding.
+     * @param data The string to encode.
+     * @return The Huffman-encoded binary string.
+     */
     std::string encode(const std::string& data) {
         std::string encodedData;
 
@@ -144,6 +189,11 @@ public:
         return encodedData;
     }
 
+    /**
+     * @brief Decodes a Huffman-encoded string.
+     * @param encodedData The encoded binary string.
+     * @return The original decoded string.
+     */
     std::string decode(const std::string& encodedData) {
         std::string decodedData;
         Node* node = root;
@@ -165,12 +215,20 @@ public:
         return decodedData;
     }
 
+    /**
+     * @brief Saves the Huffman tree to a file.
+     * @param filename The file to save the Huffman tree.
+     */
     void saveHuffmanTreeToFile(const std::string filename) {
         std::ofstream outFile(filename, std::ios::binary);
         saveHuffmanTree(this->root, outFile);
         outFile.close();
     }
 
+    /**
+     * @brief Loads a Huffman tree from a file.
+     * @param filename The file from which to load the tree.
+     */
     void loadHuffmanTreeFromFile(const std::string& filename) {
         std::ifstream inFile(filename, std::ios::binary);
         this->root = loadHuffmanTree(inFile);

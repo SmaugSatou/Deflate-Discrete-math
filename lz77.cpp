@@ -16,6 +16,11 @@ public:
         Lz77Code(int offSet, int length, char nextChar) : offSet(offSet), length(length), nextChar(nextChar) {};
     };
 
+    /**
+     * Compresses a given string using LZ77 algorithm.
+     * @param data The input string to compress.
+     * @return A vector of Lz77Code structs representing the compressed data.
+     */
     std::vector<Lz77Code> lz77Compress(const std::string& data) {
         std::vector<Lz77Code> compressedData;
         int index = 0;
@@ -52,6 +57,11 @@ public:
         return compressedData;
     }
 
+    /**
+     * Decompresses a vector of Lz77Code structures back into the original string.
+     * @param codes The vector of Lz77Code structs representing compressed data.
+     * @return The decompressed string.
+     */
     static std::string lz77Decompress(const std::vector<Lz77Code>& codes) {
         std::string decompressedText;
         for (const Lz77Code& code : codes) {
@@ -67,6 +77,11 @@ public:
         return decompressedText;
     }
 
+    /**
+    * Converts compressed LZ77 data into a string representation.
+    * @param codes The vector of Lz77Code structs.
+    * @return A string representation of the compressed data.
+    */
     std::string compressedToString(const std::vector<Lz77Code>& codes) {
         std::stringstream ss;
 
@@ -77,6 +92,11 @@ public:
         return ss.str();
     }
 
+    /**
+    * Parses a string representation of compressed LZ77 data back into Lz77Code structures.
+    * @param tokenStr The string representation of compressed data.
+    * @return A vector of Lz77Code structs.
+    */
     static std::vector<Lz77Code> parseTokensFromString(const std::string& tokenStr) {
         std::vector<Lz77Code> tokens;
         size_t pos = 0;
@@ -119,6 +139,11 @@ public:
         return tokens;
     }
 
+    /**
+     * Decompresses a string representation of LZ77 compressed data.
+     * @param tokenStr The string representation of compressed data.
+     * @return The decompressed original string.
+     */
     static std::string lz77DecompressFromString(const std::string& tokenStr) {
         std::vector<Lz77Code> tokens = parseTokensFromString(tokenStr);
         return lz77Decompress(tokens);

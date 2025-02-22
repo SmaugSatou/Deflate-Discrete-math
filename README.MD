@@ -1,0 +1,75 @@
+# Deflate
+
+## About the Project
+This project implements **Huffman coding** and **LZ77 compression**, two fundamental algorithms for data compression.
+
+## Features
+- **Huffman Coding**
+  - Builds an optimal binary tree for encoding data
+  - Supports encoding and decoding operations
+  - Saves and loads Huffman trees from files
+
+- **LZ77 Compression**
+  - Implements LZ77 with a sliding window of 32 KB
+  - Compresses input data into offset-length-character tuples
+  - Supports decompression back to the original text
+
+## Getting Started
+### Requirements
+To build and run this project, ensure you have:
+- **C++17 or later**
+- A compatible **C++ compiler** (GCC, Clang, MSVC, etc.)
+- **CMake**
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/SmaugSatou/Deflate-Discrete-math.git
+   cd Deflate-Discrete-math
+   ```
+
+### Unix (Linux, Macos)
+
+2. Build the project:
+   ```bash
+   mkdir build && cd build
+   cmake .. && make
+   ```
+
+### Windows 
+
+2. Build the project:
+   ```
+   mkdir build
+   cd build
+   cmake ..
+   ```
+   ```
+   cmake --build . --config Debug
+   ```
+   **or** 
+   ```
+   cmake --build . --config Release
+   ```
+3. Usage:
+   ```
+   ./Debug/deflate.exe <action> <inputFilePath> <compressedFilePath> <decompressedFilePath>
+   ```
+### Usage examples
+Compressing data
+```
+./Debug/deflate.exe compress <./input.txt> <./compressed_output_.deflate>
+```
+Decompressing data
+```
+./Debug/huffman.exe decompress -  <./compressed_output_.deflate> <./decompressed__output.txt>
+```
+## **IMPORTANT NOTICE**
+
+To **decompress** the data, you **must have the tree file**.
+
+- The tree file is required for decoding the compressed data correctly.
+- It is saved in the **same directory** as the compressed data file.
+
+Please ensure that the tree file is present in the same folder to avoid errors during decompression.

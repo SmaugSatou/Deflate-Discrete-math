@@ -3,6 +3,11 @@
 #include <iostream>
 #include <bitset>
 
+/**
+ * @brief Writes a compressed binary representation of a bitstring to a file.
+ * @param bitString The string containing binary data ('0' and '1').
+ * @param fileName The name of the output file (default: "compressed.deflate").
+ */
 static void writeCompressedData(const std::string& bitString, const std::string& fileName = "compressed.deflate") {
     std::ofstream file(fileName, std::ios::binary);
 
@@ -35,6 +40,11 @@ static void writeCompressedData(const std::string& bitString, const std::string&
     file.close();
 }
 
+/**
+ * @brief Reads a compressed binary file and converts it back into a bitstring.
+ * @param fileName The name of the file to read (default: "compressed.deflate").
+ * @return A string containing the extracted bit sequence.
+ */
 static std::string readCompressedData(const std::string& fileName = "compressed.deflate") {
     std::ifstream file(fileName, std::ios::binary);
 
