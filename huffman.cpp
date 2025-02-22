@@ -84,10 +84,10 @@ private:
         }
 
         if (root->left == nullptr && root->right == nullptr) {
-            outFile << "1" << root->character << root->rate << "\n";
+            outFile << "1 " << root->character << " " << root->rate << "\n";
         }
         else {
-            outFile << "0" << root->rate << "\n";
+            outFile << "0 " << root->rate << "\n";
         }
 
         saveHuffmanTree(root->left, outFile);
@@ -96,12 +96,13 @@ private:
 
     Node* loadHuffmanTree(std::ifstream& inFile) {
         char flag;
-        inFile >> flag;
+        inFile >> flag;  
 
         if (flag == '1') {
-            char symbol;
+            inFile.get();
+            char symbol = inFile.get();
             int frequency;
-            inFile >> symbol >> frequency;
+            inFile >> frequency;
 
             return new Node(symbol, frequency);
         }
@@ -173,6 +174,9 @@ public:
     void loadHuffmanTreeFromFile(const std::string& filename) {
         std::ifstream inFile(filename, std::ios::binary);
         this->root = loadHuffmanTree(inFile);
+        if (!root) {
+            std::cout << "None";
+        }
         inFile.close();
     }
 };

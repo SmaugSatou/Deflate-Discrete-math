@@ -15,6 +15,7 @@ static std::string deflateCompress(const std::string inputFilePath, const std::s
     std::string lz77CompressedString = lz77.compressedToString(lz77CompressedData);
 
     huffman.build(lz77CompressedString);
+
     std::string treeFilePath = outputFilePath;
     if (treeFilePath.size() > 8 && treeFilePath.substr(treeFilePath.size() - 8) == ".deflate") {
         treeFilePath = treeFilePath.substr(0, treeFilePath.size() - 8);
@@ -22,8 +23,9 @@ static std::string deflateCompress(const std::string inputFilePath, const std::s
 
     treeFilePath += ".tree";
 
-    huffman.saveHuffmanTreeToFile(treeFilePath);
     std::string huffmanCompressedData = huffman.encode(lz77CompressedString);
+    huffman.saveHuffmanTreeToFile(treeFilePath);
+
 
     writeCompressedData(huffmanCompressedData, outputFilePath);
 
@@ -32,9 +34,9 @@ static std::string deflateCompress(const std::string inputFilePath, const std::s
 
 static std::string deflateDecompress(const std::string inputFilePath, const std::string outputFilePath, Huffman& huffman) {
     std::string huffmanCompressedData = readCompressedData(inputFilePath);
-
+    
     std::string lz77CompressedString = huffman.decode(huffmanCompressedData);
-    std::cout << lz77CompressedString;
+
     std::string decompressedData = Lz77::lz77DecompressFromString(lz77CompressedString);
        
     std::ofstream outputFile(outputFilePath);
@@ -54,21 +56,15 @@ int main(int argc, char* argv[]) {
     std::string action = argv[1];
     std::string inputFilePath = argv[2];
     std::string compressedFilePath = argv[3];
-    std::string decompressedFilePath = (argc > 4) ? argv[4] : "";
+    std::string decompressedFilePath = (argc > 4) ? argv[4] : "";;
 
     Huffman huffman;
-
-    std::cout << "Action: " << action << '\n';
-    std::cout << "Input File: " << inputFilePath << '\n';
-    std::cout << "Compressed File: " << compressedFilePath << '\n';
-    std::cout << "Decompressed File: " << decompressedFilePath << '\n';
 
     if (action == "compress") {
         std::cout << "Compressing...\n";
         std::string compressResult = deflateCompress(inputFilePath, compressedFilePath, huffman);
         std::cout << "Compression done! Compressed data size: " << compressResult.size() << " bytes.\n";
-    }
-    else if (action == "decompress") {
+    } else if (action == "decompress") {
         if (decompressedFilePath.empty()) {
             std::cerr << "For decompression, provide the decompressed file path.\n";
             return 1;
