@@ -10,7 +10,7 @@ class Huffman {
 private:
 
     struct Node {
-        char character;
+        unsigned char character;
         int rate;
         Node* left;
         Node* right;
@@ -21,6 +21,7 @@ private:
          * @param rate The frequency of the character.
          */
         Node(char character, int rate) : character(character), rate(rate), left(nullptr), right(nullptr) {}
+        Node(int rate) : character(0), rate(rate), left(nullptr), right(nullptr) {}
     };
 
     Node* root;
@@ -109,7 +110,9 @@ private:
         }
 
         if (root->left == nullptr && root->right == nullptr) {
-            outFile << "1 " << root->character << " " << root->rate << "\n";
+            outFile << "1 ";
+            outFile.write(reinterpret_cast<const char*>(&root->character), sizeof(root->character));
+            outFile << " " << root->rate << "\n";
         }
         else {
             outFile << "0 " << root->rate << "\n";
@@ -119,6 +122,7 @@ private:
         saveHuffmanTree(root->right, outFile);
     }
 
+
     /**
      * @brief Loads a Huffman tree from a file.
      * @param inFile The input file stream.
@@ -126,15 +130,16 @@ private:
      */
     Node* loadHuffmanTree(std::ifstream& inFile) {
         char flag;
-        inFile >> flag;  
+        inFile >> flag;
 
         if (flag == '1') {
             inFile.get();
-            char symbol = inFile.get();
+            unsigned char byte;
+            inFile.read(reinterpret_cast<char*>(&byte), sizeof(byte));
             int frequency;
             inFile >> frequency;
 
-            return new Node(symbol, frequency);
+            return new Node(byte, frequency);
         }
         else if (flag == '0') {
             int frequency;
@@ -143,7 +148,7 @@ private:
             Node* left = loadHuffmanTree(inFile);
             Node* right = loadHuffmanTree(inFile);
 
-            Node* internalNode = new Node(0, frequency);
+            Node* internalNode = new Node(frequency);
             internalNode->left = left;
             internalNode->right = right;
             return internalNode;
