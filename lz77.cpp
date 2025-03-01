@@ -103,7 +103,9 @@ public:
 
         while (pos < tokenStr.size()) {
             size_t start = tokenStr.find('(', pos);
-            if (start == std::string::npos) break;
+            if (start == std::string::npos) {
+                break;
+            }
 
             size_t end = tokenStr.find(')', start);
             if (end == std::string::npos) {

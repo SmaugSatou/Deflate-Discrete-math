@@ -7,7 +7,6 @@ This project implements **Huffman coding** and **LZ77 compression**, two fundame
 - **Huffman Coding**
   - Builds an optimal binary tree for encoding data
   - Supports encoding and decoding operations
-  - Saves and loads Huffman trees from files
 
 - **LZ77 Compression**
   - Implements LZ77 with a sliding window of 32 KB
@@ -65,11 +64,3 @@ Decompressing data
 ```
 ./Debug/huffman.exe decompress -  <./compressed_output_.deflate> <./decompressed__output.txt>
 ```
-## **IMPORTANT NOTICE**
-
-To **decompress** the data, you **must have the tree file**.
-
-- The tree file is required for decoding the compressed data correctly.
-- It is saved in the **same directory** as the compressed data file.
-
-Please ensure that the tree file is present in the same folder to avoid errors during decompression.

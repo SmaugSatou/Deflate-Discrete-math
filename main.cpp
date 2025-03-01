@@ -23,16 +23,8 @@ static std::string deflateCompress(const std::string inputFilePath, const std::s
 
     huffman.build(lz77CompressedString);
 
-    std::string treeFilePath = outputFilePath;
-    if (treeFilePath.size() > 8 && treeFilePath.substr(treeFilePath.size() - 8) == ".deflate") {
-        treeFilePath = treeFilePath.substr(0, treeFilePath.size() - 8);
-    }
-
-    treeFilePath += ".tree";
-
     std::string huffmanCompressedData = huffman.encode(lz77CompressedString);
-    huffman.saveHuffmanTreeToFile(treeFilePath);
-
+    huffman.saveHuffmanTreeToFile(outputFilePath);
 
     writeCompressedData(huffmanCompressedData, outputFilePath);
 
@@ -44,10 +36,11 @@ static std::string deflateCompress(const std::string inputFilePath, const std::s
  * @param inputFilePath The path to the compressed file.
  * @param outputFilePath The path where the decompressed file will be saved.
  * @param huffman A reference to a Huffman object used for decoding.
+ * @param pos A position of data skipping header info.
  * @return The decompressed string.
  */
-static std::string deflateDecompress(const std::string inputFilePath, const std::string outputFilePath, Huffman& huffman) {
-    std::string huffmanCompressedData = readCompressedData(inputFilePath);
+static std::string deflateDecompress(const std::string inputFilePath, const std::string outputFilePath, Huffman& huffman, std::streampos pos) {
+    std::string huffmanCompressedData = readCompressedData(inputFilePath, pos);
     
     std::string lz77CompressedString = huffman.decode(huffmanCompressedData);
 
@@ -82,31 +75,23 @@ int main(int argc, char* argv[]) {
 
     if (action == "compress") {
         std::cout << "Compressing...\n";
+
         std::string compressResult = deflateCompress(inputFilePath, compressedFilePath, huffman);
+
         std::cout << "Compression done! Compressed data size: " << compressResult.size() << " bytes.\n";
-    } else if (action == "decompress") {
+    } 
+    else if (action == "decompress") {
         if (decompressedFilePath.empty()) {
             std::cerr << "For decompression, provide the decompressed file path.\n";
             return 1;
         }
 
-        std::string treeFilePath = compressedFilePath;
-        if (treeFilePath.size() > 8 && treeFilePath.substr(treeFilePath.size() - 8) == ".deflate") {
-            treeFilePath = treeFilePath.substr(0, treeFilePath.size() - 8);
-        }
-        treeFilePath += ".tree";
-
-        std::ifstream treeFile(treeFilePath, std::ios::binary);
-        if (treeFile) {
-            std::cout << "Loading Huffman tree from: " << treeFilePath << '\n';
-            huffman.loadHuffmanTreeFromFile(treeFilePath);
-        } else {
-            std::cerr << "Error: Huffman tree file not found. Unable to decompress.\n";
-            return 1;
-        }
+        std::streampos pos = huffman.loadTreeFromFile(compressedFilePath);
 
         std::cout << "Decompressing...\n";
-        std::string decompressResult = deflateDecompress(compressedFilePath, decompressedFilePath, huffman);
+
+        std::string decompressResult = deflateDecompress(compressedFilePath, decompressedFilePath, huffman, pos);
+
         std::cout << "Decompression done! Output saved to: " << decompressedFilePath << "\n";
     }
     else {
